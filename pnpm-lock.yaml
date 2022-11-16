@@ -1,0 +1,29 @@
+lockfileVersion: 5.4
+
+specifiers:
+  '@figma/plugin-typings': '*'
+  prettier: ^2.7.1
+  typescript: '*'
+
+devDependencies:
+  '@figma/plugin-typings': 1.55.1
+  prettier: 2.7.1
+  typescript: 4.9.3
+
+packages:
+
+  /@figma/plugin-typings/1.55.1:
+    resolution: {integrity: sha512-gNyAFMA83oNJ8X4xrMjs49CCPwfRRdNepvZUx4gxS5/GBnZqV+rhEkM9crgJrynrE1VgxILLjQIPgUxxSNBWJQ==}
+    dev: true
+
+  /prettier/2.7.1:
+    resolution: {integrity: sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==}
+    engines: {node: '>=10.13.0'}
+    hasBin: true
+    dev: true
+
+  /typescript/4.9.3:
+    resolution: {integrity: sha512-CIfGzTelbKNEnLpLdGFgdyKhG23CKdKgQPOBc+OUNrkJ2vr+KSzsSV5kq5iWhEQbok+quxgGzrAtGWCyU7tHnA==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: true
