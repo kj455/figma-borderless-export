@@ -1,33 +1,94 @@
-// This plugin will open a window to prompt the user to enter a number, and
-// it will then create that many rectangles on the screen.
+type ExportFileSettings =
+  | ExportSettingsImage
+  | ExportSettingsPDF
+  | ExportSettingsSVG;
 
-// This file holds the main code for the plugins. It has access to the *document*.
-// You can access browser APIs in the <script> tag inside "ui.html" which has a
-// full browser environment (see documentation).
+type Asset = {
+  name: string;
+  setting: ExportSetting;
+  bytes: Uint8Array;
+};
 
-// This shows the HTML page in "ui.html".
-figma.showUI(__html__);
+type ExportSetting = ExportFileSettings;
 
-// Calls to "parent.postMessage" from within the HTML page will trigger this
-// callback. The callback will be passed the "pluginMessage" property of the
-// posted message.
-figma.ui.onmessage = msg => {
-  // One way of distinguishing between different types of messages sent from
-  // your HTML page is to use an object with a "type" property like this.
-  if (msg.type === 'create-rectangles') {
-    const nodes: SceneNode[] = [];
-    for (let i = 0; i < msg.count; i++) {
-      const rect = figma.createRectangle();
-      rect.x = i * 150;
-      rect.fills = [{type: 'SOLID', color: {r: 1, g: 0.5, b: 0}}];
-      figma.currentPage.appendChild(rect);
-      nodes.push(rect);
-    }
-    figma.currentPage.selection = nodes;
-    figma.viewport.scrollAndZoomIntoView(nodes);
+type Extension = 'png' | 'jpg' | 'svg';
+const exportSettingMap: Record<Extension, ExportSetting[]> = {
+  png: [
+    {
+      format: 'PNG',
+      suffix: '',
+      constraint: { type: 'SCALE', value: 1 },
+      contentsOnly: true,
+    },
+    {
+      format: 'PNG',
+      suffix: '@1.5x',
+      constraint: { type: 'SCALE', value: 1.5 },
+      contentsOnly: true,
+    },
+    {
+      format: 'PNG',
+      suffix: '@2x',
+      constraint: { type: 'SCALE', value: 2 },
+      contentsOnly: true,
+    },
+  ],
+  jpg: [
+    {
+      format: 'JPG',
+      suffix: '',
+      constraint: { type: 'SCALE', value: 1 },
+      contentsOnly: true,
+    },
+    {
+      format: 'JPG',
+      suffix: '@1.5x',
+      constraint: { type: 'SCALE', value: 1.5 },
+      contentsOnly: true,
+    },
+    {
+      format: 'JPG',
+      suffix: '@2x',
+      constraint: { type: 'SCALE', value: 2 },
+      contentsOnly: true,
+    },
+  ],
+  svg: [
+    {
+      format: 'SVG',
+      suffix: '',
+      contentsOnly: true,
+    },
+  ],
+};
+
+const main = async (command: string) => {
+  const { selection } = figma.currentPage;
+  if (selection.length > 0) {
+    figma.showUI(__html__, { visible: false });
+
+    const assets: Asset[] = await Promise.all(
+      exportSettingMap[command as Extension].flatMap((setting) => {
+        return selection.map(async (selection) => {
+          return {
+            name:
+              selection.name.replace(/\s/g, '').split('/').pop()?.toString() ||
+              'anonymous',
+            setting,
+            bytes: await selection.exportAsync(setting),
+          };
+        });
+      })
+    );
+
+    figma.ui.postMessage({ assets });
+  } else {
+    figma.closePlugin('Please select at least one node');
   }
+};
 
-  // Make sure to close the plugin when you're done. Otherwise the plugin will
-  // keep running, which shows the cancel button at the bottom of the screen.
-  figma.closePlugin();
+main(figma.command);
+
+figma.ui.onmessage = (msg) => {
+  figma.closePlugin(msg);
 };

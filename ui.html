@@ -1,17 +1,64 @@
-<h2>Rectangle Creator</h2>
-<p>Count: <input id="count" value="5"></p>
-<button id="create">Create wt-exporter</button>
-<button id="cancel">Cancel wt-exporter</button>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"
+  integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHvegtg=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+
 <script>
+  const exportDetailMap = {
+    PNG: {
+      blobType: 'image/png',
+      ext: '.png',
+    },
+    JPG: {
+      blobType: 'image/jpeg',
+      ext: '.jpg',
+    },
+    SVG: {
+      blobType: 'image/svg+xml',
+      ext: '.svg',
+    },
+  };
 
-document.getElementById('create').onclick = () => {
-  const textbox = document.getElementById('count');
-  const count = parseInt(textbox.value, 10);
-  parent.postMessage({ pluginMessage: { type: 'create-rectangles', count } }, '*')
-}
+  const typedArrayToBuffer = (array) => {
+    return array.buffer.slice(
+      array.byteOffset,
+      array.byteLength + array.byteOffset
+    );
+  };
 
-document.getElementById('cancel').onclick = () => {
-  parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*')
-}
+  window.onmessage = async (event) => {
+    const assets = event?.data?.pluginMessage?.assets;
+    if (assets == null) {
+      return;
+    }
 
+    await new Promise(async (resolve) => {
+      const zip = new JSZip();
+
+      assets.forEach((data) => {
+        const { bytes, name, setting } = data;
+        const detail = exportDetailMap[setting.format];
+        const cleanBytes = typedArrayToBuffer(bytes);
+        const blob = new Blob([cleanBytes], { type: detail.blobType });
+        zip.file(`${name}${setting.suffix}${detail.ext}`, blob, {
+          base64: true,
+        });
+      });
+
+      const content = await zip.generateAsync({ type: 'blob' });
+
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(content);
+      link.download = `export.zip`;
+      link.click();
+
+      setTimeout(() => {
+        resolve('done');
+      }, 600);
+    });
+
+    window.parent.postMessage({ pluginMessage: 'Ready for download.' }, '*');
+  };
 </script>
