@@ -5,13 +5,27 @@
   "main": "code.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "watch": "npm run build -- --watch"
+    "watch": "run-p tsc:plugin:watch tsc:ui:watch",
+    "tsc:main": "tsc --noEmit -p plugin",
+    "tsc:ui": "tsc --noEmit -p ui",
+    "tsc:watch": "run-p 'tsc:main --watch --preserveWatchOutput' 'tsc:ui --watch --preserveWatchOutput'",
+    "build:main": "esbuild plugin/code.ts --bundle --outfile=dist/code.js",
+    "build:ui": "vite build --minify esbuild --emptyOutDir=false",
+    "build:watch": "run-p 'build:main --watch' 'build:ui --watch'",
+    "vite": "vite",
+    "dev": "run-p tsc:watch build:watch vite"
   },
   "author": "",
   "license": "",
   "devDependencies": {
     "@figma/plugin-typings": "*",
+    "@types/jszip": "^3.4.1",
+    "esbuild": "^0.15.14",
+    "jszip": "^3.10.1",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
-    "typescript": "*"
+    "typescript": "*",
+    "vite": "^3.2.4",
+    "vite-plugin-singlefile": "^0.13.1"
   }
 }
