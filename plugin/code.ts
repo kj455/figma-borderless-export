@@ -7,6 +7,8 @@ type Asset = {
   name: string;
   setting: ExportSetting;
   bytes: Uint8Array;
+  width: number;
+  height: number;
 };
 
 type ExportSetting = ExportFileSettings;
@@ -70,12 +72,21 @@ const main = async (command: string) => {
     const assets: Asset[] = await Promise.all(
       exportSettingMap[command as Extension].flatMap((setting) => {
         return selection.map(async (selection) => {
+          console.log({ selection });
           return {
             name:
               selection.name.replace(/\s/g, '').split('/').pop()?.toString() ||
               'anonymous',
             setting,
             bytes: await selection.exportAsync(setting),
+            width:
+              setting.format === 'PDF' || setting.format == 'SVG'
+                ? selection.width
+                : selection.width * (setting.constraint?.value ?? 1),
+            height:
+              setting.format === 'PDF' || setting.format == 'SVG'
+                ? selection.height
+                : selection.height * (setting.constraint?.value ?? 1),
           };
         });
       })
