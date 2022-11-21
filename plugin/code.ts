@@ -72,7 +72,6 @@ const main = async (command: string) => {
     const assets: Asset[] = await Promise.all(
       exportSettingMap[command as Extension].flatMap((setting) => {
         return selection.map(async (selection) => {
-          console.log({ selection });
           return {
             name:
               selection.name.replace(/\s/g, '').split('/').pop()?.toString() ||

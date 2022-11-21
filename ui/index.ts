@@ -10,7 +10,7 @@ window.onmessage = async (event) => {
 
   const borderRemoved = await Promise.all(assets.map((a) => removeBorder(a)));
 
-  await zip(assets);
+  await zip(borderRemoved);
 
   window.parent.postMessage({ pluginMessage: 'Ready for download.' }, '*');
 };

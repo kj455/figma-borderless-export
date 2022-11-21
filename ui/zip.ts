@@ -1,25 +1,6 @@
 import JSZip from 'jszip';
-
-type Asset = {
-  name: string;
-  setting: any;
-  bytes: Uint8Array;
-};
-
-const exportDetailMap = {
-  PNG: {
-    blobType: 'image/png',
-    ext: '.png',
-  },
-  JPG: {
-    blobType: 'image/jpeg',
-    ext: '.jpg',
-  },
-  SVG: {
-    blobType: 'image/svg+xml',
-    ext: '.svg',
-  },
-};
+import { exportDetailMap } from './constants';
+import { Asset } from './types';
 
 const typedArrayToBuffer = (array: Uint8Array) => {
   return array.buffer.slice(
