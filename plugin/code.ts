@@ -67,7 +67,8 @@ const exportSettingMap: Record<Extension, ExportSetting[]> = {
 const main = async (command: string) => {
   const { selection } = figma.currentPage;
   if (selection.length > 0) {
-    figma.showUI(__html__, { visible: false });
+    figma.showUI(__html__, { width: 800, height: 800 });
+    // figma.showUI(__html__, { visible: false });
 
     const assets: Asset[] = await Promise.all(
       exportSettingMap[command as Extension].flatMap((setting) => {

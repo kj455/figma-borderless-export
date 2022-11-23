@@ -13,7 +13,8 @@
     "build:ui": "vite build --minify esbuild --emptyOutDir=false",
     "build:watch": "run-p 'build:main --watch' 'build:ui --watch'",
     "vite": "vite",
-    "dev": "run-p tsc:watch build:watch vite"
+    "dev": "run-p tsc:watch build:watch vite",
+    "test": "vitest"
   },
   "author": "",
   "license": "",
@@ -26,6 +27,7 @@
     "prettier": "^2.7.1",
     "typescript": "*",
     "vite": "^3.2.4",
-    "vite-plugin-singlefile": "^0.13.1"
+    "vite-plugin-singlefile": "^0.13.1",
+    "vitest": "^0.25.3"
   }
 }
