@@ -1,6 +1,16 @@
 import JSZip from 'jszip';
-import { exportDetailMap } from './constants';
 import { Asset } from './types';
+
+const exportDetailMap = {
+  PNG: {
+    blobType: 'image/png',
+    ext: '.png',
+  },
+  JPG: {
+    blobType: 'image/jpeg',
+    ext: '.jpg',
+  },
+} as const;
 
 const typedArrayToBuffer = (array: Uint8Array) => {
   return array.buffer.slice(
@@ -15,8 +25,7 @@ export const zip = async (assets: Asset[]): Promise<void> => {
 
     assets.forEach((data) => {
       const { bytes, name, setting } = data;
-      const detail =
-        exportDetailMap[setting.format as keyof typeof exportDetailMap];
+      const detail = exportDetailMap[setting.format];
       const cleanBytes = typedArrayToBuffer(bytes);
       const blob = new Blob([cleanBytes], { type: detail.blobType });
       zip.file(`${name}${setting.suffix}${detail.ext}`, blob, {

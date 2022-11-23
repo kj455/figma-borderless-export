@@ -1,3 +1,6 @@
+
+![Frame 6](https://user-images.githubusercontent.com/38521709/203567054-333c67a3-c8e3-4526-8c3b-75305bffbb95.png)
+
 # Figma Borderless Export 🛹🚫
 Remove strange borders when exporting images with figma
 

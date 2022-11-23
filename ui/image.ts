@@ -110,7 +110,7 @@ export const hasBorder = (
   /** default: 70% */
   const DIFF_PIXELS_ON_EDGE_RATIO = threshold?.DIFF_PIXELS_ON_EDGE_RATIO ?? 0.7;
 
-  const directionDetail: Record<
+  const directionDetailMap: Record<
     Direction,
     {
       dx: number[];
@@ -150,7 +150,7 @@ export const hasBorder = (
     dy,
     xRange: [xStart, xEnd],
     yRange: [yStart, yEnd],
-  } = directionDetail[direction];
+  } = directionDetailMap[direction];
 
   let diffCount = 0;
   for (let x = xStart; x < xEnd; x++) {
