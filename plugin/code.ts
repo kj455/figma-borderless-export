@@ -1,20 +1,13 @@
-type ExportFileSettings =
-  | ExportSettingsImage
-  | ExportSettingsPDF
-  | ExportSettingsSVG;
-
 type Asset = {
   name: string;
-  setting: ExportSetting;
+  setting: ExportSettingsImage;
   bytes: Uint8Array;
   width: number;
   height: number;
 };
 
-type ExportSetting = ExportFileSettings;
-
-type Extension = 'png' | 'jpg' | 'svg';
-const exportSettingMap: Record<Extension, ExportSetting[]> = {
+type Extension = 'png' | 'jpg';
+const exportSettingMap: Record<Extension, ExportSettingsImage[]> = {
   png: [
     {
       format: 'PNG',
@@ -55,38 +48,25 @@ const exportSettingMap: Record<Extension, ExportSetting[]> = {
       contentsOnly: true,
     },
   ],
-  svg: [
-    {
-      format: 'SVG',
-      suffix: '',
-      contentsOnly: true,
-    },
-  ],
 };
+
+const formatName = (name: string) =>
+  name.replace(/\s/g, '').split('/').pop()?.toString() || 'anonymous';
 
 const main = async (command: string) => {
   const { selection } = figma.currentPage;
   if (selection.length > 0) {
-    figma.showUI(__html__, { width: 800, height: 800 });
-    // figma.showUI(__html__, { visible: false });
+    figma.showUI(__html__, { visible: false });
 
     const assets: Asset[] = await Promise.all(
       exportSettingMap[command as Extension].flatMap((setting) => {
         return selection.map(async (selection) => {
           return {
-            name:
-              selection.name.replace(/\s/g, '').split('/').pop()?.toString() ||
-              'anonymous',
+            name: formatName(selection.name),
             setting,
             bytes: await selection.exportAsync(setting),
-            width:
-              setting.format === 'PDF' || setting.format == 'SVG'
-                ? selection.width
-                : selection.width * (setting.constraint?.value ?? 1),
-            height:
-              setting.format === 'PDF' || setting.format == 'SVG'
-                ? selection.height
-                : selection.height * (setting.constraint?.value ?? 1),
+            width: selection.width * (setting.constraint?.value ?? 1),
+            height: selection.height * (setting.constraint?.value ?? 1),
           };
         });
       })
