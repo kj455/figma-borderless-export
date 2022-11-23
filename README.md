@@ -1,40 +1,22 @@
-Below are the steps to get your plugin running. You can also find instructions at:
+# Figma Borderless Export 🛹🚫
+Remove strange borders when exporting images with figma
 
-  https://www.figma.com/plugin-docs/setup/
+## ✨ Features
+- Export as JPG/PNG without borders.
+- This plugin does 1x, 1.5x, and 2x export by default. In the future, we plan to offer flexible choices through the UI.
 
-This plugin template uses Typescript and NPM, two standard tools in creating JavaScript applications.
+## 🛠️ How to use
+1. Install the plugin
+2. Select the frames you want to export
+3. plugin -> Borderless Export -> Export as JPG/PNG
 
-First, download Node.js which comes with NPM. This will allow you to install TypeScript and other
-libraries. You can find the download link here:
 
-  https://nodejs.org/en/download/
+## 📝 Note
+There are two main causes of strange borders when exporting with figma.
 
-Next, install TypeScript using the command:
+1. When the width/height of the export target is a non-integer values due to scaled export (ex. 0.75x, 1.5x, ...)
+2. when the target frame is not on a grid point on figma
 
-  npm install -g typescript
+This plugin solves **only problem 1**.
 
-Finally, in the directory of your plugin, get the latest type definitions for the plugin API by running:
-
-  npm install --save-dev @figma/plugin-typings
-
-If you are familiar with JavaScript, TypeScript will look very familiar. In fact, valid JavaScript code
-is already valid Typescript code.
-
-TypeScript adds type annotations to variables. This allows code editors such as Visual Studio Code
-to provide information about the Figma API while you are writing code, as well as help catch bugs
-you previously didn't notice.
-
-For more information, visit https://www.typescriptlang.org/
-
-Using TypeScript requires a compiler to convert TypeScript (code.ts) into JavaScript (code.js)
-for the browser to run.
-
-We recommend writing TypeScript code using Visual Studio code:
-
-1. Download Visual Studio Code if you haven't already: https://code.visualstudio.com/.
-2. Open this directory in Visual Studio Code.
-3. Compile TypeScript to JavaScript: Run the "Terminal > Run Build Task..." menu item,
-    then select "npm: watch". You will have to do this again every time
-    you reopen Visual Studio Code.
-
-That's it! Visual Studio Code will regenerate the JavaScript file every time you save.
+If you want to solve problem 2, you need to move the frame to a grid point on figma.
