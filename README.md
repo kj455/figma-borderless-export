@@ -7,13 +7,25 @@ Remove strange borders when exporting images with figma
 ## ✨ Features
 
 - Export as JPG/PNG without borders.
-- This plugin does 1x, 1.5x, and 2x export by default. In the future, we plan to offer flexible choices through the UI.
+- Currently, the plugin provides a fixed export option, but in the future we intend to make the choice flexible through the UI.
+
+## 💭 Motivation
+When exporting images in figma, sometimes a 1px white border is added to the edge of the image.
+
+It is difficult to notice that and also troublesome to remove the borders after export.
+
+With this plugin, We can export images **without** strange borders!
 
 ## 🛠️ How to use
 
 1. Install the plugin
 2. Select the frames you want to export
-3. plugin -> Borderless Export -> Export as JPG/PNG
+3. plugin -> Borderless Export -> Export as JPG/PNG (options below)
+  - Export as JPG 1.5x
+  - Export as JPG 1x, 1.5x, 2x
+  - Export as PNG 1.5x
+  - Export as PNG 1x, 1.5x, 2x
+
 
 ## 📝 Note
 
@@ -24,4 +36,22 @@ There are two main causes of strange borders when exporting with figma.
 
 This plugin solves **only problem 1**.
 
-If you want to solve problem 2, you need to move the frame to a grid point on figma.
+If you want to solve problem 2, [you just need to move the frame to a grid point on figma](https://forum.figma.com/t/borders-around-image-exports/4016/3).
+
+## 💻 Development
+
+### Build plugin
+```bash
+git clone git@github.com:kj455/figma-borderless-export.git
+cd figma-borderless-export
+
+pnpm install
+pnpm dev
+```
+
+### Import plugin
+
+1. Open Figma App
+2. Import plugin  
+  `figma > plugins > development > new plugin > import plugin from manifest`
+3. select `manifest.json` in `figma-borderless-export` directory
