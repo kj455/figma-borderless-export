@@ -1,32 +1,18 @@
 import { Asset, Pixel } from './types';
 
-export const getPixel = (
-  image: ImageData,
-  x: number,
-  y: number
-): Pixel | null => {
+export const getPixel = (image: ImageData, x: number, y: number): Pixel | null => {
   const red = y * (image.width * 4) + x * 4;
 
   if (red < 0 || red > image.data.length - 4) {
     return null;
   }
 
-  return [
-    image.data[red],
-    image.data[red + 1],
-    image.data[red + 2],
-    image.data[red + 3],
-  ];
+  return [image.data[red], image.data[red + 1], image.data[red + 2], image.data[red + 3]];
 };
 
-export const calcGray = ([r, g, b]: Pixel): number =>
-  Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+export const calcGray = ([r, g, b]: Pixel): number => Math.round(0.299 * r + 0.587 * g + 0.114 * b);
 
-export const getPixelGray = (
-  image: ImageData,
-  x: number,
-  y: number
-): number | null => {
+export const getPixelGray = (image: ImageData, x: number, y: number): number | null => {
   const p = getPixel(image, x, y);
   if (p == null) {
     return null;
@@ -50,8 +36,8 @@ async function encode(
     dirtyX: number,
     dirtyY: number,
     dirtyWidth: number,
-    dirtyHeight: number
-  ]
+    dirtyHeight: number,
+  ],
 ): Promise<Uint8Array> {
   canvas.width = dirtyWidth;
   canvas.height = dirtyHeight;
@@ -60,8 +46,7 @@ async function encode(
   return await new Promise((resolve, reject) => {
     canvas.toBlob((blob) => {
       const reader = new FileReader();
-      reader.onload = () =>
-        resolve(new Uint8Array(reader.result as ArrayBufferLike));
+      reader.onload = () => resolve(new Uint8Array(reader.result as ArrayBufferLike));
       reader.onerror = () => reject(new Error('Could not read from blob'));
       reader.readAsArrayBuffer(blob ?? new Blob());
     });
@@ -70,11 +55,7 @@ async function encode(
 
 // Decoding an image can be done by sticking it in an HTML
 // canvas, as we can read individual pixels off the canvas.
-async function decode(
-  canvas: HTMLCanvasElement,
-  ctx: CanvasRenderingContext2D,
-  bytes: Uint8Array
-): Promise<ImageData> {
+async function decode(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, bytes: Uint8Array): Promise<ImageData> {
   const url = URL.createObjectURL(new Blob([bytes]));
   const image: HTMLImageElement = await new Promise((resolve, reject) => {
     const img = new Image();
@@ -103,7 +84,7 @@ export const hasBorder = (
   threshold?: Partial<{
     PIXEL_DIFF_ABS: number;
     DIFF_PIXELS_ON_EDGE_RATIO: number;
-  }>
+  }>,
 ): boolean => {
   /** default: 20% of 256  */
   const PIXEL_DIFF_ABS = threshold?.PIXEL_DIFF_ABS ?? 0.2 * 256;
@@ -168,8 +149,7 @@ export const hasBorder = (
       const aroundGrayList = dx
         .flatMap((dx) => dy.map((dy) => getPixelGray(image, x + dx, y + dy)))
         .filter((gray) => gray != null) as number[];
-      const average =
-        aroundGrayList.reduce((a, b) => a + b, 0) / aroundGrayList.length;
+      const average = aroundGrayList.reduce((a, b) => a + b, 0) / aroundGrayList.length;
 
       const targetGray = calcGray(p);
       if (Math.abs(average - targetGray) > PIXEL_DIFF_ABS) {

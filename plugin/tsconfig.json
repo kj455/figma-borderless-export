@@ -4,6 +4,7 @@
     "lib": ["ES2020"],
     "strict": true,
     "skipLibCheck": true,
+    "noEmit": true,
     "typeRoots": ["../node_modules/@figma", "../node_modules/@types"]
   }
 }

@@ -13,10 +13,7 @@ const exportDetailMap = {
 } as const;
 
 const typedArrayToBuffer = (array: Uint8Array) => {
-  return array.buffer.slice(
-    array.byteOffset,
-    array.byteLength + array.byteOffset
-  );
+  return array.buffer.slice(array.byteOffset, array.byteLength + array.byteOffset);
 };
 
 export const zip = async (assets: Asset[]): Promise<void> => {

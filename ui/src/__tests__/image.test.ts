@@ -1,15 +1,7 @@
-import {
-  calcGray,
-  getPixel,
-  getPixelGray,
-  hasBorder,
-  isTransparent,
-} from '../image';
+import { calcGray, getPixel, getPixelGray, hasBorder, isTransparent } from '../image';
 import { Pixel } from '../types';
 
-const createImageData = (
-  option: Partial<{ width: number; height: number; data: number[] }>
-) =>
+const createImageData = (option: Partial<{ width: number; height: number; data: number[] }>) =>
   ({
     width: option.width ?? 0,
     height: option.height ?? 0,
@@ -21,12 +13,7 @@ const createPixel = (p: Pixel) => p;
 
 describe('image', () => {
   const image = createImageData({
-    data: [
-      ...[0, 0, 0, 255],
-      ...[1, 1, 1, 255],
-      ...[2, 2, 2, 255],
-      ...[3, 3, 3, 255],
-    ],
+    data: [...[0, 0, 0, 255], ...[1, 1, 1, 255], ...[2, 2, 2, 255], ...[3, 3, 3, 255]],
     width: 2,
     height: 2,
   });

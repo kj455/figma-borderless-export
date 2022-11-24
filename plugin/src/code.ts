@@ -1,8 +1,7 @@
 import { parseCommand } from './command';
 import { exportSettingMap } from './constants';
 
-const formatName = (name: string) =>
-  name.replace(/\s/g, '').split('/').pop()?.toString() || 'anonymous';
+const formatName = (name: string) => name.replace(/\s/g, '').split('/').pop()?.toString() || 'anonymous';
 
 const main = async (command: string) => {
   const { selection } = figma.currentPage;
@@ -27,7 +26,7 @@ const main = async (command: string) => {
             height: selection.height * (setting.constraint?.value ?? 1),
           };
         });
-      })
+      }),
     );
 
     figma.ui.postMessage({ assets });
