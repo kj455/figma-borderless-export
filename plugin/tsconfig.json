@@ -3,8 +3,7 @@
     "target": "es6",
     "lib": ["ES2020"],
     "strict": true,
-    "moduleResolution": "Node",
     "skipLibCheck": true,
-    "typeRoots": ["../node_modules/@figma"]
+    "typeRoots": ["../node_modules/@figma", "../node_modules/@types"]
   }
 }
