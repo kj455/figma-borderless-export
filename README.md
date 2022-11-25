@@ -1,5 +1,13 @@
 ![Frame 6](https://user-images.githubusercontent.com/38521709/203567054-333c67a3-c8e3-4526-8c3b-75305bffbb95.png)
 
+<p align="center">
+  <img src="https://img.shields.io/github/workflow/status/kj455/figma-borderless-export/Test" alt="github workflow status" >
+  <a href="https://www.figma.com/community/plugin/1177240622175495525">
+    <img src="https://img.shields.io/badge/figma-in%20review-orange" alt="figma" >
+  </a> 
+  <img src="https://img.shields.io/github/stars/kj455/figma-borderless-export?style=social" alt="github stars" >
+</p>
+
 # Figma Borderless Export 🛹🚫
 
 Remove strange borders when exporting images with figma
