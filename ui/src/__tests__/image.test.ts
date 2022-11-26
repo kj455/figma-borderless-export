@@ -49,12 +49,12 @@ describe('image', () => {
   });
 
   test.each([
-    [createPixel([0, 0, 0, 0]), true],
-    [createPixel([0, 0, 0, 128]), true],
-    [createPixel([0, 0, 0, 129]), false],
-    [createPixel([0, 0, 0, 255]), false],
-  ])(`isTransparent(%s) = %s`, (p, expected) => {
-    expect(isTransparent(p)).toBe(expected);
+    [createPixel([0, 0, 0, 0]), 0.75, true],
+    [createPixel([0, 0, 0, 192]), 0.75, true],
+    [createPixel([0, 0, 0, 193]), 0.75, false],
+    [createPixel([0, 0, 0, 255]), 0.75, false],
+  ])(`isTransparent(%s) = %s`, (p, ratio, expected) => {
+    expect(isTransparent(p, ratio)).toBe(expected);
   });
 
   // gray value to pixel array

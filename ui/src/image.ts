@@ -20,8 +20,16 @@ export const getPixelGray = (image: ImageData, x: number, y: number): number | n
   return calcGray(p);
 };
 
-/** include half-transparent */
-export const isTransparent = (p: Pixel): boolean => p[3] <= 128;
+/**
+ * @param ratio 0~1 (default 0.75, alpha 0〜0.75 is transparent)
+ */
+export const isTransparent = (p: Pixel, ratio = 0.75): boolean => {
+  if (ratio < 0 || ratio > 1) {
+    throw new Error('ratio must be between 0 and 1');
+  }
+  const threshold = 256 * ratio;
+  return p[3] <= threshold;
+}
 
 // Encoding an image is also done by sticking pixels in an
 // HTML canvas and by asking the canvas to serialize it into
@@ -148,7 +156,7 @@ export const hasBorder = (
 
       const aroundGrayList = dx
         .flatMap((dx) => dy.map((dy) => getPixelGray(image, x + dx, y + dy)))
-        .filter((gray) => gray != null) as number[];
+        .filter((v): v is number => v != null);
       const average = aroundGrayList.reduce((a, b) => a + b, 0) / aroundGrayList.length;
 
       const targetGray = calcGray(p);

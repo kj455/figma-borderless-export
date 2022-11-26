@@ -9,6 +9,7 @@
     "build": "tsc -p tsconfig.json",
     "watch": "run-p tsc:plugin:watch tsc:ui:watch",
     "test": "jest",
+    "test:watch": "jest --watch",
     "vite": "vite",
     "tsc:plugin": "tsc --noEmit -p plugin",
     "tsc:ui": "tsc --noEmit -p ui",

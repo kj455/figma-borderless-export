@@ -42,7 +42,7 @@ There are two main causes of strange borders when exporting with figma.
 
 This plugin solves both cases in most cases.
 
-However, in the second case, in rare cases, the border may not be detected correctly. In that case, [placing the frame on a grid point can solve the problem](https://forum.figma.com/t/white-border-when-exporting-to-jpg/1999/2).
+In the rare case that a border remains when exporting to jpeg, change to PNG export or check that [the image is positioned on the grid.](https://forum.figma.com/t/white-border-when-exporting-to-jpg/1999/2)
 
 We plan to improve the algorithm for border detection in the future.
 
