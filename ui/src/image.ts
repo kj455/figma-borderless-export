@@ -177,34 +177,38 @@ export const removeBorder = async (asset: Asset): Promise<Asset> => {
     return asset;
   }
 
-  let x = 0;
-  let y = 0;
-  let w = img.width;
-  let h = img.height;
+  let dx = 0;
+  let dy = 0;
+  let dirtyX = 0;
+  let dirtyY = 0;
+  let dirtyW = img.width;
+  let dirtyH = img.height;
 
   if (hasBorder(img, 'left')) {
     console.log(`left border detected. ${asset.name}${asset.setting.suffix}`);
-    x = -1;
-    w -= 1;
+    dx--;
+    dirtyX++;
+    dirtyW--;
   }
 
   if (hasBorder(img, 'top')) {
     console.log(`top border detected. ${asset.name}${asset.setting.suffix}`);
-    y = -1;
-    h -= 1;
+    dy--;
+    dirtyY++;
+    dirtyH--;
   }
 
   if (hasBorder(img, 'right')) {
     console.log(`right border detected. ${asset.name}${asset.setting.suffix}`);
-    w -= 1;
+    dirtyW--;
   }
 
   if (hasBorder(img, 'bottom')) {
     console.log(`bottom border detected. ${asset.name}${asset.setting.suffix}`);
-    h -= 1;
+    dirtyH--;
   }
 
-  const newBytes = await encode(canvas, ctx, img, [0, 0, x, y, w, h]);
+  const newBytes = await encode(canvas, ctx, img, [dx, dy, dirtyX, dirtyY, dirtyW, dirtyH]);
 
   return { ...asset, bytes: newBytes };
 };
