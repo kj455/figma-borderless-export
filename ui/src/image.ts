@@ -96,8 +96,8 @@ export const hasBorder = (
 ): boolean => {
   /** default: 20% of 256  */
   const PIXEL_DIFF_ABS = threshold?.PIXEL_DIFF_ABS ?? 0.2 * 256;
-  /** default: 70% */
-  const DIFF_PIXELS_ON_EDGE_RATIO = threshold?.DIFF_PIXELS_ON_EDGE_RATIO ?? 0.7;
+  /** default: 20% */
+  const DIFF_PIXELS_ON_EDGE_RATIO = threshold?.DIFF_PIXELS_ON_EDGE_RATIO ?? 0.2;
 
   const directionDetailMap: Record<
     Direction,
@@ -167,7 +167,6 @@ export const hasBorder = (
   }
 
   const scannedNum = Math.max(xEnd - xStart, yEnd - yStart);
-
   return diffCount > scannedNum * DIFF_PIXELS_ON_EDGE_RATIO;
 };
 

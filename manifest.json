@@ -7,20 +7,20 @@
   "ui": "dist/index.html",
   "menu": [
     {
-      "name": "Export as jpg (1x, 1.5x, 2x)",
-      "command": "jpg:1x,1.5x,2x"
-    },
-    {
-      "name": "Export as jpg (1.5x)",
-      "command": "jpg:1.5x"
-    },
-    {
       "name": "Export as png (1x, 1.5x, 2x)",
       "command": "png:1x,1.5x,2x"
     },
     {
       "name": "Export as png (1.5x)",
       "command": "png:1.5x"
+    },
+    {
+      "name": "[Experimental] Export as jpg (1x, 1.5x, 2x)",
+      "command": "jpg:1x,1.5x,2x"
+    },
+    {
+      "name": "[Experimental] Export as jpg (1.5x)",
+      "command": "jpg:1.5x"
     }
   ]
 }

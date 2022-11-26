@@ -1,5 +1,6 @@
 import { calcGray, getPixel, getPixelGray, hasBorder, isTransparent } from '../image';
 import { Pixel } from '../types';
+import { createCanvas, loadImage } from 'canvas';
 
 const createImageData = (option: Partial<{ width: number; height: number; data: number[] }>) =>
   ({
@@ -67,7 +68,7 @@ describe('image', () => {
       createImageData({
         data: [
           ...[...g2p(112), ...g2p(118), ...g2p(225)],
-          ...[...g2p(152), ...g2p(216), ...g2p(222)],
+          ...[...g2p(182), ...g2p(216), ...g2p(222)],
           ...[...g2p(200), ...g2p(210), ...g2p(214)],
         ],
         width: 3,
@@ -122,4 +123,56 @@ describe('image', () => {
   ])('hasBorder(%s) - %s', (dir, _, image, expected) => {
     expect(hasBorder(image, dir)).toBe(expected);
   });
+
+  describe('hasBorder', () => {
+    const loadImageData = async (path: string): Promise<ImageData> => {
+      const canvas = createCanvas(0, 0);
+      const ctx = canvas.getContext('2d');
+
+      return loadImage(path).then((image) => {
+        canvas.width = image.width;
+        canvas.height = image.height;
+
+        ctx.drawImage(image, 0, 0);
+        return ctx.getImageData(0, 0, image.width, image.height);
+      });
+    };
+
+    test.each<{
+      path: string;
+      ext: string[];
+      expected: Record<'top' | 'right' | 'bottom' | 'left', boolean>;
+    }>([
+      {
+        path: './ui/src/__tests__/bin/right-bottom',
+        ext: ['png', 'jpg'],
+        expected: { top: false, right: true, bottom: true, left: false },
+      },
+      {
+        path: './ui/src/__tests__/bin/left-bottom',
+        ext: ['png', 'jpg'],
+        expected: { top: false, right: false, bottom: true, left: true },
+      },
+      {
+        path: './ui/src/__tests__/bin/top-left-bottom',
+        ext: ['png', 'jpg'],
+        expected: { top: true, right: false, bottom: true, left: true },
+      },
+      {
+        path: './ui/src/__tests__/bin/no-border',
+        ext: ['png', 'jpg'],
+        expected: { top: false, right: false, bottom: false, left: false },
+      },
+    ])(`hasBorder - $path`, async ({ path, ext, expected }) => {
+      ext.forEach(async (e) => {
+        const image = await loadImageData(`${path}.${e}`);
+        expect(hasBorder(image, 'top')).toBe(expected.top);
+        expect(hasBorder(image, 'right')).toBe(expected.right);
+        expect(hasBorder(image, 'bottom')).toBe(expected.bottom);
+        expect(hasBorder(image, 'left')).toBe(expected.left);
+      });
+    });
+  });
 });
+
+
