@@ -19,9 +19,7 @@ Remove strange borders when exporting images with figma
 
 ## 💭 Motivation
 When exporting images in figma, sometimes a 1px white border is added to the edge of the image.
-
-It is difficult to notice that and also troublesome to remove the borders after export.
-
+It is difficult to notice that and also troublesome to remove the borders after export.  
 With this plugin, We can export images **without** strange borders!
 
 ## 🛠️ How to use
@@ -42,9 +40,11 @@ There are two main causes of strange borders when exporting with figma.
 1. When the width/height of the export target is a non-integer values due to scaled export (ex. 0.75x, 1.5x, ...)
 2. when the target frame is not on a grid point on figma
 
-This plugin solves **only problem 1**.
+This plugin solves both cases in most cases.
 
-If you want to solve problem 2, [you just need to move the frame to a grid point on figma](https://forum.figma.com/t/borders-around-image-exports/4016/3).
+However, in the second case, in rare cases, the border may not be detected correctly. In that case, [placing the frame on a grid point can solve the problem](https://forum.figma.com/t/white-border-when-exporting-to-jpg/1999/2).
+
+We plan to improve the algorithm for border detection in the future.
 
 ## 💻 Development
 
