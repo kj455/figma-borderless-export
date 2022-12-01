@@ -3,7 +3,7 @@
 <p align="center">
   <img src="https://img.shields.io/github/workflow/status/kj455/figma-borderless-export/Test" alt="github workflow status" >
   <a href="https://www.figma.com/community/plugin/1177240622175495525">
-    <img src="https://img.shields.io/badge/figma-in%20review-orange" alt="figma" >
+    <img src="https://img.shields.io/badge/Figma-F24E1E?logo=figma&logoColor=white" alt="figma" >
   </a> 
   <img src="https://img.shields.io/github/stars/kj455/figma-borderless-export?style=social" alt="github stars" >
 </p>
