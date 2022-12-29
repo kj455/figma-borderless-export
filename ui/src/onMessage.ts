@@ -1,6 +1,6 @@
+import { Asset } from '../../shared/types';
 import { removeBorder } from './image';
 import { setFilename } from './state';
-import { Asset } from './types';
 import { zip } from './zip';
 
 window.onmessage = async (event) => {

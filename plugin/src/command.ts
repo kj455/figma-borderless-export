@@ -1,4 +1,5 @@
-import { EXTENSION_LIST, SCALE_LIST } from './constants';
+import { EXTENSION_LIST, SCALE_LIST } from '../../shared/constants';
+import { Extension, Scale } from '../../shared/types';
 
 type Command =
   | {

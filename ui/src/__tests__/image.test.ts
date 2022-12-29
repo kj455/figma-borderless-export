@@ -1,5 +1,4 @@
-import { calcGray, getPixel, getPixelGray, hasBorder, isTransparent } from '../image';
-import { Pixel } from '../types';
+import { calcGray, getPixel, getPixelGray, hasBorder, isTransparent, Pixel } from '../image';
 import { createCanvas, loadImage } from 'canvas';
 
 const createImageData = (option: Partial<{ width: number; height: number; data: number[] }>) =>

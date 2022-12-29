@@ -1,4 +1,6 @@
-import { Asset, Pixel } from './types';
+import { Asset } from '../../shared/types';
+
+export type Pixel = [r: number, g: number, b: number, a: number];
 
 export const getPixel = (image: ImageData, x: number, y: number): Pixel | null => {
   const red = y * (image.width * 4) + x * 4;

@@ -1,20 +1,24 @@
 import { createSignal, JSX, Component, Index } from 'solid-js';
 import { render } from 'solid-js/web';
+import { EXTENSION_LIST, SCALE_LIST } from '../../shared/constants';
+import { Extension, Scale } from '../../shared/types';
 import './index.css';
 import { filename } from './state';
 
-const blueFocusRing = 'focus:outline-none focus:ring focus:ring-blue-500';
-
-const scaleOptions = ['0.5x', '0.75x', '1x', '1.5x', '2x', '3x', '4x'] as const;
-const extensionOptions = ['PNG', 'JPG'] as const;
+const focusStyle = 'focus:outline-none focus:ring focus:ring-blue-500';
+const hoverStyle = 'hover:outline hover:outline-lightgray';
 
 const Spacer: Component<{ x?: number; y?: number }> = ({ x, y }) => {
-  return <div class={`${x != null ? `mr-${x}` : ''} ${y != null ? `mt-${y}` : ''} flex-grow`.trim()} />;
+  const classes = ['flex-grow'];
+  if (x != null) classes.push(`mr-${x}`);
+  if (y != null) classes.push(`mt-${y}`);
+
+  return <div class={classes.join(' ')} />;
 };
 
 const defaultSetting = {
-  scale: '1x' satisfies typeof scaleOptions[number],
-  extension: 'PNG' satisfies typeof extensionOptions[number],
+  scale: '1x' satisfies Scale,
+  extension: 'png' satisfies Extension,
   suffix: '',
 };
 
@@ -52,33 +56,33 @@ const App = () => {
         </div>
       </div>
 
-      <div class="mt-4" />
+      <Spacer y={4} />
 
       <div class="flex flex-col gap-2">
         <Index each={settings()}>
           {(setting, i) => (
             <div class="flex w-full justify-between text-xs">
               <select
-                class={`-ml-2 bg-transparent p-1 hover:outline hover:outline-lightgray ${blueFocusRing}`}
+                class={`-ml-2 bg-transparent p-1 ${hoverStyle} ${focusStyle}`}
                 value={setting().scale}
                 onInput={handleInput('scale', i)}
               >
-                {scaleOptions.map((scale) => (
+                {SCALE_LIST.map((scale) => (
                   <option value={scale}>{scale}</option>
                 ))}
               </select>
               <input
                 placeholder="Suffix"
-                class={`w-16 bg-transparent p-1 hover:outline hover:outline-lightgray ${blueFocusRing}`}
+                class={`w-16 bg-transparent p-1 ${hoverStyle} ${focusStyle}`}
                 value={setting().suffix}
                 onInput={handleInput('suffix', i)}
               />
               <select
-                class={`bg-transparent p-1 hover:outline hover:outline-lightgray ${blueFocusRing}`}
+                class={`bg-transparent p-1 ${hoverStyle} ${focusStyle}`}
                 value={setting().extension}
                 onInput={handleInput('extension', i)}
               >
-                {extensionOptions.map((ext) => (
+                {EXTENSION_LIST.map((ext) => (
                   <option value={ext}>{ext}</option>
                 ))}
               </select>
@@ -87,7 +91,7 @@ const App = () => {
         </Index>
       </div>
 
-      <div class="mt-4" />
+      <Spacer y={4} />
 
       <button class="w-full rounded-md border border-white/80 p-2 text-xs" onClick={() => console.log(settings())}>
         Export {filename()}

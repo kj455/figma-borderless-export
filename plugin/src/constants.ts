@@ -1,5 +1,4 @@
-export const EXTENSION_LIST: Readonly<Extension[]> = ['png', 'jpg'] as const;
-export const SCALE_LIST: Readonly<Scale[]> = ['1x', '1.5x', '2x'] as const;
+import { Extension, Scale } from '../../shared/types';
 
 export const exportSettingMap: {
   [key in Extension]: {
@@ -7,6 +6,18 @@ export const exportSettingMap: {
   };
 } = {
   png: {
+    '0.5x': {
+      format: 'PNG',
+      suffix: '@0.5x',
+      constraint: { type: 'SCALE', value: 0.5 },
+      contentsOnly: true,
+    },
+    '0.75x': {
+      format: 'PNG',
+      suffix: '@0.75x',
+      constraint: { type: 'SCALE', value: 0.75 },
+      contentsOnly: true,
+    },
     '1x': {
       format: 'PNG',
       suffix: '',
@@ -23,10 +34,34 @@ export const exportSettingMap: {
       format: 'PNG',
       suffix: '@2x',
       constraint: { type: 'SCALE', value: 2 },
+      contentsOnly: true,
+    },
+    '3x': {
+      format: 'PNG',
+      suffix: '@3x',
+      constraint: { type: 'SCALE', value: 3 },
+      contentsOnly: true,
+    },
+    '4x': {
+      format: 'PNG',
+      suffix: '@4x',
+      constraint: { type: 'SCALE', value: 4 },
       contentsOnly: true,
     },
   },
   jpg: {
+    '0.5x': {
+      format: 'JPG',
+      suffix: '@0.5x',
+      constraint: { type: 'SCALE', value: 0.5 },
+      contentsOnly: true,
+    },
+    '0.75x': {
+      format: 'JPG',
+      suffix: '@0.75x',
+      constraint: { type: 'SCALE', value: 0.75 },
+      contentsOnly: true,
+    },
     '1x': {
       format: 'JPG',
       suffix: '',
@@ -43,6 +78,18 @@ export const exportSettingMap: {
       format: 'JPG',
       suffix: '@2x',
       constraint: { type: 'SCALE', value: 2 },
+      contentsOnly: true,
+    },
+    '3x': {
+      format: 'JPG',
+      suffix: '@3x',
+      constraint: { type: 'SCALE', value: 3 },
+      contentsOnly: true,
+    },
+    '4x': {
+      format: 'JPG',
+      suffix: '@4x',
+      constraint: { type: 'SCALE', value: 4 },
       contentsOnly: true,
     },
   },

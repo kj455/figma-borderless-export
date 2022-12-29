@@ -1,3 +1,5 @@
+import { EXTENSION_LIST, SCALE_LIST } from './constants';
+
 /**
  * extract necessary types from @figma
  */
@@ -24,4 +26,5 @@ export type Asset = {
   height: number;
 };
 
-export type Pixel = [r: number, g: number, b: number, a: number];
+export type Extension = typeof EXTENSION_LIST[number];
+export type Scale = typeof SCALE_LIST[number];
