@@ -1,8 +1,14 @@
 import { removeBorder } from './image';
+import { setFilename } from './state';
 import { Asset } from './types';
 import { zip } from './zip';
 
 window.onmessage = async (event) => {
+  const name = event?.data?.pluginMessage?.name as string | null;
+  if (name != null) {
+    setFilename(name);
+  }
+
   const assets = event?.data?.pluginMessage?.assets as Asset[] | null;
   if (assets == null) {
     return;

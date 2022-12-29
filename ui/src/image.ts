@@ -29,7 +29,7 @@ export const isTransparent = (p: Pixel, ratio = 0.75): boolean => {
   }
   const threshold = 256 * ratio;
   return p[3] <= threshold;
-}
+};
 
 // Encoding an image is also done by sticking pixels in an
 // HTML canvas and by asking the canvas to serialize it into

@@ -10,8 +10,8 @@ const main = async (_command: string) => {
   const command = parseCommand(_command);
   switch (command.action) {
     case 'showUI':
-      figma.showUI(__html__, { width: 320, height: 480 });
-      figma.ui.postMessage({ action: 'showUI' });
+      figma.showUI(__html__, { width: 240, height: 240 });
+      figma.ui.postMessage({ action: 'showUI', name: selection.length > 1 ? 'images' : selection[0].name });
       break;
 
     case 'export':
