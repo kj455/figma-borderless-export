@@ -11,6 +11,7 @@ const main = async (_command: string) => {
   switch (command.action) {
     case 'showUI':
       figma.showUI(__html__, { width: 320, height: 480 });
+      figma.ui.postMessage({ action: 'showUI' });
       break;
 
     case 'export':
@@ -22,7 +23,7 @@ const main = async (_command: string) => {
       }
 
       const assets = await exportImages({ ext, scaleList, selection });
-      figma.ui.postMessage({ assets });
+      figma.ui.postMessage({ action: 'export', assets });
   }
 };
 

@@ -3,7 +3,7 @@ import { Asset } from './types';
 import { zip } from './zip';
 
 window.onmessage = async (event) => {
-  const assets = event?.data?.pluginMessage?.assets as Asset[];
+  const assets = event?.data?.pluginMessage?.assets as Asset[] | null;
   if (assets == null) {
     return;
   }
