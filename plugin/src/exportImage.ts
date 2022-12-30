@@ -1,25 +1,29 @@
 import { exportSettingMap } from './constants';
-import { Asset, Extension, Scale } from '../../shared/types';
+import { Asset, ExportImageProperty } from '../../shared/types';
 
 const formatName = (name: string) => name.replace(/\s/g, '').split('/').pop()?.toString() || 'anonymous';
 
 export type ExportImagesPayload = {
-  ext: Extension;
-  scaleList: Scale[];
+  properties: ExportImageProperty[];
   selection: readonly SceneNode[];
 };
-export const exportImages = async ({ ext, scaleList, selection }: ExportImagesPayload): Promise<Asset[]> => {
-  const settings = scaleList.map((scale) => exportSettingMap[ext][scale]);
 
+export const exportImages = async ({ properties, selection }: ExportImagesPayload): Promise<Asset[]> => {
   const assets: Asset[] = await Promise.all(
-    settings.flatMap((setting) =>
-      selection.map(async (s) => ({
-        name: formatName(s.name),
-        setting,
-        bytes: await s.exportAsync(setting),
-        width: s.width * (setting?.constraint?.value ?? 1),
-        height: s.height * (setting?.constraint?.value ?? 1),
-      })),
+    selection.flatMap((s) =>
+      properties.map(async ({ ext, scale, suffix }) => {
+        const setting = exportSettingMap[ext][scale];
+        return {
+          name: formatName(s.name),
+          setting: {
+            ...setting,
+            suffix: suffix,
+          },
+          bytes: await s.exportAsync(setting),
+          width: s.width * (setting?.constraint?.value ?? 1),
+          height: s.height * (setting?.constraint?.value ?? 1),
+        };
+      }),
     ),
   );
 

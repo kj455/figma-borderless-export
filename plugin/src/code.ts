@@ -1,5 +1,8 @@
 import { parseCommand } from './command';
 import { exportImages } from './exportImage';
+import { createMessageClient } from './messageClient';
+
+const messageClient = createMessageClient(figma);
 
 const main = async (_command: string) => {
   const { selection } = figma.currentPage;
@@ -8,27 +11,35 @@ const main = async (_command: string) => {
   }
 
   const command = parseCommand(_command);
+  if (command == null) {
+    return figma.closePlugin('Invalid command');
+  }
+
   switch (command.action) {
     case 'showUI':
       figma.showUI(__html__, { width: 240, height: 240 });
-      figma.ui.postMessage({ action: 'showUI', name: selection.length > 1 ? 'images' : selection[0].name });
+      messageClient.showUI({ action: 'showUI', name: selection.length > 1 ? 'images' : selection[0].name });
       break;
 
     case 'export':
       figma.showUI(__html__, { visible: false });
 
-      const { ext, scaleList } = command;
-      if (ext == null || scaleList == null) {
-        return figma.closePlugin('Could not parse command.');
-      }
+      const { properties } = command;
 
-      const assets = await exportImages({ ext, scaleList, selection });
-      figma.ui.postMessage({ action: 'export', assets });
+      const assets = await exportImages({
+        properties,
+        selection,
+      });
+
+      console.log({ assets });
+
+      messageClient.borderlessExport({
+        action: 'exportBorderless',
+        assets,
+      });
   }
 };
 
 main(figma.command);
 
-figma.ui.onmessage = (msg) => {
-  figma.closePlugin(msg);
-};
+figma.ui.onmessage = messageClient.onMessage;

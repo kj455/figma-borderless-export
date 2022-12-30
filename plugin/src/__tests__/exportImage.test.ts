@@ -18,11 +18,27 @@ describe('exportImage', () => {
     {
       case: 'export multiple images',
       input: {
-        ext: 'png',
-        scaleList: ['1x', '2x'],
+        properties: [
+          {
+            ext: 'png',
+            scale: '1.5x',
+            suffix: '@1.5x',
+          },
+          {
+            ext: 'jpg',
+            scale: '2x',
+            suffix: '@2x',
+          },
+        ],
         selection: [
           createSceneNode({
-            name: 'png 1',
+            name: 'image 1',
+            width: 100,
+            height: 100,
+            exportAsync: jest.fn().mockResolvedValue('exportAsync'),
+          }),
+          createSceneNode({
+            name: 'image 2',
             width: 100,
             height: 100,
             exportAsync: jest.fn().mockResolvedValue('exportAsync'),
@@ -31,15 +47,41 @@ describe('exportImage', () => {
       },
       expected: [
         {
-          name: 'png1',
-          setting: exportSettingMap['png']['1x'],
+          name: 'image1',
+          setting: {
+            ...exportSettingMap['png']['1.5x'],
+            suffix: '@1.5x',
+          },
           bytes: 'exportAsync',
-          width: 100,
-          height: 100,
+          width: 150,
+          height: 150,
         },
         {
-          name: 'png1',
-          setting: exportSettingMap['png']['2x'],
+          name: 'image1',
+          setting: {
+            ...exportSettingMap['jpg']['2x'],
+            suffix: '@2x',
+          },
+          bytes: 'exportAsync',
+          width: 200,
+          height: 200,
+        },
+        {
+          name: 'image2',
+          setting: {
+            ...exportSettingMap['png']['1.5x'],
+            suffix: '@1.5x',
+          },
+          bytes: 'exportAsync',
+          width: 150,
+          height: 150,
+        },
+        {
+          name: 'image2',
+          setting: {
+            ...exportSettingMap['jpg']['2x'],
+            suffix: '@2x',
+          },
           bytes: 'exportAsync',
           width: 200,
           height: 200,

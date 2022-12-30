@@ -2,13 +2,30 @@ import { parseCommand } from '../command';
 
 describe('command', () => {
   test.each([
-    ['export:jpg:1x,1.5x,2x', { action: 'export', ext: 'jpg', scaleList: ['1x', '1.5x', '2x'] }],
-    ['export:png:1x,1.5x,2x', { action: 'export', ext: 'png', scaleList: ['1x', '1.5x', '2x'] }],
-    ['export:jpg:1x', { action: 'export', ext: 'jpg', scaleList: ['1x'] }],
-    ['export:png:1.5x', { action: 'export', ext: 'png', scaleList: ['1.5x'] }],
-    ['export:svg:2x', { action: 'export', ext: null, scaleList: null }],
-    ['export:gif:2x', { action: 'export', ext: null, scaleList: null }],
-    ['showUI', { action: 'showUI' }],
+    [
+      'export:jpg:1x,1.5x,2x',
+      {
+        action: 'export',
+        properties: [
+          { ext: 'jpg', scale: '1x', suffix: '' },
+          { ext: 'jpg', scale: '1.5x', suffix: '@1.5x' },
+          { ext: 'jpg', scale: '2x', suffix: '@2x' },
+        ],
+      },
+    ],
+    [
+      'export:png:1x,1.5x,2x',
+      {
+        action: 'export',
+        properties: [
+          { ext: 'png', scale: '1x', suffix: '' },
+          { ext: 'png', scale: '1.5x', suffix: '@1.5x' },
+          { ext: 'png', scale: '2x', suffix: '@2x' },
+        ],
+      },
+    ],
+    ['export:svg:1x,1.5x,2x', null],
+    ['showUI', { action: 'showUI', name: '' }],
   ])('parseCommand(%s)', (command, expected) => {
     expect(parseCommand(command)).toEqual(expected);
   });

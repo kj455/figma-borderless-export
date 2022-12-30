@@ -14,7 +14,7 @@
     "tsc:plugin": "tsc --noEmit -p plugin",
     "tsc:ui": "tsc --noEmit -p ui",
     "tsc:watch": "run-p 'tsc:plugin --watch --preserveWatchOutput' 'tsc:ui --watch --preserveWatchOutput'",
-    "build:plugin": "esbuild plugin/src/code.ts --bundle --outfile=dist/code.js",
+    "build:plugin": "esbuild plugin/src/code.ts --bundle --outfile=dist/code.js --target=es6",
     "build:ui": "vite build --minify esbuild --emptyOutDir=false",
     "build:watch": "run-p 'build:plugin --watch' 'build:ui --watch'",
     "clean": "rm -rf dist",
@@ -41,6 +41,7 @@
     "vite-plugin-solid": "^2.5.0"
   },
   "dependencies": {
+    "solid-icons": "^1.0.4",
     "solid-js": "^1.6.6"
   }
 }

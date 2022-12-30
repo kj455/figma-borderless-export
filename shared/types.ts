@@ -18,6 +18,16 @@ type ExportSettingsConstraints = {
 /**
  * Original types below
  */
+
+export type Extension = typeof EXTENSION_LIST[number];
+export type Scale = typeof SCALE_LIST[number];
+
+export type ExportImageProperty = {
+  ext: Extension;
+  scale: Scale;
+  suffix: string;
+};
+
 export type Asset = {
   name: string;
   setting: ExportSettingsImage;
@@ -26,5 +36,19 @@ export type Asset = {
   height: number;
 };
 
-export type Extension = typeof EXTENSION_LIST[number];
-export type Scale = typeof SCALE_LIST[number];
+export type ShowUICommand = {
+  action: 'showUI';
+  name: string;
+};
+
+export type ExportCommand = {
+  action: 'export';
+  properties: ExportImageProperty[];
+};
+
+export type ExportBorderlessCommand = {
+  action: 'exportBorderless';
+  assets: Asset[];
+};
+
+export type Command = ShowUICommand | ExportCommand | ExportBorderlessCommand;

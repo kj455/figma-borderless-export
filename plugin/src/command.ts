@@ -1,17 +1,7 @@
-import { EXTENSION_LIST, SCALE_LIST } from '../../shared/constants';
-import { Extension, Scale } from '../../shared/types';
+import { DEFAULT_SCALE, EXTENSION_LIST, SCALE_LIST } from '../../shared/constants';
+import { Command, Extension, Scale } from '../../shared/types';
 
-type Command =
-  | {
-      action: 'showUI';
-    }
-  | {
-      action: 'export';
-      ext: Extension | null;
-      scaleList: Scale[] | null;
-    };
-
-export const parseCommand = (command: string): Command => {
+export const parseCommand = (command: string): Command | null => {
   const [action, ext, scaleListStr] = command.split(':');
 
   switch (action) {
@@ -22,18 +12,22 @@ export const parseCommand = (command: string): Command => {
       const isValidScaleList = scaleListStr.split(',').every((s) => SCALE_LIST.includes(s as Scale));
 
       if (!isValidExt || !isValidScaleList) {
-        return { action: 'export', ext: null, scaleList: null };
+        return null;
       }
 
       return {
         action: 'export',
-        ext: ext as Extension,
-        scaleList: scaleList as Scale[],
+        properties: scaleList.map((scale) => ({
+          ext: ext as Extension,
+          scale: scale as Scale,
+          suffix: scale !== DEFAULT_SCALE ? `@${scale}` : '',
+        })),
       };
 
     case 'showUI':
       return {
         action: 'showUI',
+        name: '',
       };
 
     default:
