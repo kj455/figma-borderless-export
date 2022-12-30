@@ -1,4 +1,4 @@
-import { filename } from "./state";
+import { filename } from './state';
 import { createSignal, JSX, Index } from 'solid-js';
 import { EXTENSION_LIST, SCALE_LIST } from '../../shared/constants';
 import { Extension, Scale } from '../../shared/types';
