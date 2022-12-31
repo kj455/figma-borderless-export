@@ -1,8 +1,9 @@
 import { parseCommand } from './command';
 import { exportImages } from './exportImage';
 import { createMessageClient } from './messageClient';
+import { forward } from '../../shared/utils';
 
-const messageClient = createMessageClient(figma);
+const messageClient = createMessageClient({ figma, forward });
 
 const main = async (_command: string) => {
   const { selection } = figma.currentPage;
@@ -30,8 +31,6 @@ const main = async (_command: string) => {
         properties,
         selection,
       });
-
-      console.log({ assets });
 
       messageClient.borderlessExport({
         action: 'exportBorderless',

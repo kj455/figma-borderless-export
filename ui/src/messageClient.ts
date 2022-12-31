@@ -3,7 +3,13 @@ import { removeBorder } from './image';
 import { setFilename } from './state';
 import { zip } from './zip';
 
-export const createMessageClient = (window: Window) => {
+export const createMessageClient = ({
+  window,
+  forward,
+}: {
+  window: Window;
+  forward: (fn: (...args: any[]) => any, ...args: any[]) => any; // FIXME: infer forward type
+}) => {
   return {
     onMessage: async (event: MessageEvent<{ pluginMessage: ShowUICommand | ExportBorderlessCommand | undefined }>) => {
       const payload = event?.data?.pluginMessage;
@@ -13,11 +19,11 @@ export const createMessageClient = (window: Window) => {
 
       switch (payload.action) {
         case 'showUI':
-          setFilename(payload.name);
+          forward(setFilename, payload.name);
           break;
         case 'exportBorderless':
-          const borderRemoved = await Promise.all(payload.assets.map((a) => removeBorder(a)));
-          await zip(borderRemoved);
+          const borderRemoved = await Promise.all(payload.assets.map((a) => forward(removeBorder, a)));
+          await forward(zip, borderRemoved);
           break;
       }
     },

@@ -7,7 +7,7 @@
   "ui": "dist/index.html",
   "menu": [
     {
-      "name": "Export from UI",
+      "name": "Export with UI",
       "command": "showUI"
     },
     {
@@ -19,11 +19,11 @@
       "command": "export:png:1.5x"
     },
     {
-      "name": "[Experimental] Export as jpg (1x, 1.5x, 2x)",
+      "name": "Export as jpg (1x, 1.5x, 2x) [BETA]",
       "command": "export:jpg:1x,1.5x,2x"
     },
     {
-      "name": "[Experimental] Export as jpg (1.5x)",
+      "name": "Export as jpg (1.5x) [BETA]",
       "command": "export:jpg:1.5x"
     }
   ]
