@@ -51,4 +51,8 @@ export type ExportBorderlessCommand = {
   assets: Asset[];
 };
 
-export type Command = ShowUICommand | ExportCommand | ExportBorderlessCommand;
+export type CloseCommand = {
+  action: 'close';
+};
+
+export type Command = ShowUICommand | ExportCommand | ExportBorderlessCommand | CloseCommand;

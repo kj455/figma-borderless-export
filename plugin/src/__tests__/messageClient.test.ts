@@ -89,6 +89,7 @@ describe('messageClient', () => {
           selection: ['node'],
         },
         closePlugin: jest.fn(),
+        notify: jest.fn(),
       };
       const payload = { action: 'export', properties: [] } satisfies ExportCommand;
 
@@ -97,9 +98,42 @@ describe('messageClient', () => {
       await client.onMessage(payload as never, {} as never);
 
       expect(forward.mock.calls).toEqual([
+        [figma.notify, expect.any(String), expect.any(Object)],
         [exportImages, { properties: [], selection: ['node'] }],
         [client.borderlessExport, { action: 'exportBorderless', assets: 'assets' }],
       ]);
+    })
+
+    test('export - error', async () => {
+      const cancelNotification = jest.fn();
+      const forward = jest.fn((fn, args) => {
+        switch (fn) {
+          case exportImages:
+            throw new Error('error');
+          case figma.notify:
+            return {
+              cancel: cancelNotification,
+            }
+        }
+      });
+      const figma = {
+        currentPage: {
+          selection: ['node'],
+        },
+        closePlugin: jest.fn(),
+        notify: jest.fn(),
+      };
+      const payload = { action: 'export', properties: [] } satisfies ExportCommand;
+
+      const client = createMessageClient({ forward, figma } as never);
+
+      await client.onMessage(payload as never, {} as never);
+
+      expect(forward.mock.calls).toEqual([
+        [figma.notify, expect.any(String), expect.any(Object)],
+        [exportImages, { properties: [], selection: ['node'] }],
+      ]);
+      expect(cancelNotification.mock.calls).toEqual([[]])
     })
   })
 });

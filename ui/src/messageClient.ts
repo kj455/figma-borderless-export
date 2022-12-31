@@ -1,4 +1,4 @@
-import { ExportBorderlessCommand, ExportCommand, ShowUICommand } from '../../shared/types';
+import { CloseCommand, ExportBorderlessCommand, ExportCommand, ShowUICommand } from '../../shared/types';
 import { removeBorder } from './image';
 import { setFilename } from './state';
 import { zip } from './zip';
@@ -10,7 +10,7 @@ export const createMessageClient = ({
   window: Window;
   forward: (fn: (...args: any[]) => any, ...args: any[]) => any; // FIXME: infer forward type
 }) => {
-  return {
+  const client = {
     onMessage: async (event: MessageEvent<{ pluginMessage: ShowUICommand | ExportBorderlessCommand | undefined }>) => {
       const payload = event?.data?.pluginMessage;
       if (payload == null) {
@@ -24,6 +24,7 @@ export const createMessageClient = ({
         case 'exportBorderless':
           const borderRemoved = await Promise.all(payload.assets.map((a) => forward(removeBorder, a)));
           await forward(zip, borderRemoved);
+          forward(client.close, { action: 'close' });
           break;
       }
     },
@@ -36,5 +37,15 @@ export const createMessageClient = ({
         '*',
       );
     },
+
+    close: (command: CloseCommand) => {
+      window.parent.postMessage(
+        {
+          pluginMessage: command,
+        },
+        '*',
+      );
+    },
   };
+  return client;
 };

@@ -61,26 +61,29 @@ describe('MessageClient', () => {
             return 'zip';
         }
       })
-      
-      const client = createMessageClient({ forward } as never);
-      
+      const window = {
+        parent: {
+          postMessage: jest.fn(),
+        },
+      } as never;
+
+      const client = createMessageClient({ forward, window } as never);
+
       await client.onMessage({
         data: {
           pluginMessage: {
             action: 'exportBorderless',
-            assets: [
-              'asset1',
-              'asset2',
-            ]
-          }
-        }
+            assets: ['asset1', 'asset2'],
+          },
+        },
       } as never);
 
       expect(forward.mock.calls).toEqual([
         [removeBorder, 'asset1'],
         [removeBorder, 'asset2'],
-        [zip, ['borderRemoved','borderRemoved']],
-      ])
+        [zip, ['borderRemoved', 'borderRemoved']],
+        [client.close, { action: 'close' }],
+      ]);
     })
   })
 });
