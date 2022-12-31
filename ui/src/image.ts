@@ -1,4 +1,6 @@
-import { Asset, Pixel } from './types';
+import { Asset } from '../../shared/types';
+
+export type Pixel = [r: number, g: number, b: number, a: number];
 
 export const getPixel = (image: ImageData, x: number, y: number): Pixel | null => {
   const red = y * (image.width * 4) + x * 4;
@@ -29,7 +31,7 @@ export const isTransparent = (p: Pixel, ratio = 0.75): boolean => {
   }
   const threshold = 256 * ratio;
   return p[3] <= threshold;
-}
+};
 
 // Encoding an image is also done by sticking pixels in an
 // HTML canvas and by asking the canvas to serialize it into

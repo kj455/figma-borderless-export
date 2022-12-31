@@ -1,42 +1,44 @@
 import { parseCommand } from './command';
-import { exportSettingMap } from './constants';
+import { exportImages } from './exportImage';
+import { createMessageClient } from './messageClient';
+import { forward } from '../../shared/utils';
 
-const formatName = (name: string) => name.replace(/\s/g, '').split('/').pop()?.toString() || 'anonymous';
+const messageClient = createMessageClient({ figma, forward });
 
-const main = async (command: string) => {
+const main = async (_command: string) => {
   const { selection } = figma.currentPage;
-  if (selection.length > 0) {
-    figma.showUI(__html__, { visible: false });
-
-    const { ext, scaleList } = parseCommand(command);
-    if (ext == null || scaleList == null) {
-      return figma.closePlugin('Could not parse command.');
-    }
-
-    const settings = scaleList.map((scale) => exportSettingMap[ext][scale]);
-
-    const assets: Asset[] = await Promise.all(
-      settings.flatMap((setting) => {
-        return selection.map(async (selection) => {
-          return {
-            name: formatName(selection.name),
-            setting,
-            bytes: await selection.exportAsync(setting),
-            width: selection.width * (setting.constraint?.value ?? 1),
-            height: selection.height * (setting.constraint?.value ?? 1),
-          };
-        });
-      }),
-    );
-
-    figma.ui.postMessage({ assets });
-  } else {
+  if (selection.length === 0) {
     figma.closePlugin('Please select at least one node');
+  }
+
+  const command = parseCommand(_command);
+  if (command == null) {
+    return figma.closePlugin('Invalid command');
+  }
+
+  switch (command.action) {
+    case 'showUI':
+      figma.showUI(__html__, { width: 240, height: 240 });
+      messageClient.showUI({ action: 'showUI', name: selection.length > 1 ? 'images' : selection[0].name });
+      break;
+
+    case 'export':
+      figma.showUI(__html__, { visible: false });
+
+      const { properties } = command;
+
+      const assets = await exportImages({
+        properties,
+        selection,
+      });
+
+      messageClient.borderlessExport({
+        action: 'exportBorderless',
+        assets,
+      });
   }
 };
 
 main(figma.command);
 
-figma.ui.onmessage = (msg) => {
-  figma.closePlugin(msg);
-};
+figma.ui.onmessage = messageClient.onMessage;

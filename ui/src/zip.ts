@@ -1,5 +1,5 @@
 import JSZip from 'jszip';
-import { Asset } from './types';
+import { Asset } from '../../shared/types';
 
 const exportDetailMap = {
   PNG: {
