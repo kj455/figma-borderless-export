@@ -14,8 +14,10 @@ Remove strange borders when exporting images with figma
 
 ## ✨ Features
 
-- Export as JPG/PNG without borders.
-- Currently, the plugin provides a fixed export option, but in the future we intend to make the choice flexible through the UI.
+Export images without borders with the following options.
+
+- **Extension**: [PNG, JPG]
+- **Scale**: [0.5x, 0.75x, 1x, 1.5x, 2x, 3x, 4x]
 
 ## 💭 Motivation
 
@@ -27,12 +29,10 @@ With this plugin, We can export images **without** strange borders!
 
 1. Install the plugin
 2. Select the frames you want to export
-3. plugin -> Borderless Export -> Export as JPG/PNG (options below)
-
-- Export as JPG 1.5x
-- Export as JPG 1x, 1.5x, 2x
-- Export as PNG 1.5x
-- Export as PNG 1x, 1.5x, 2x
+3. plugin → Borderless Export
+   - Export with UI
+   - Export as PNG 1x, 1.5x, 2x
+   - Export as JPG 1x, 1.5x, 2x (beta)
 
 ## 📝 Note
 
