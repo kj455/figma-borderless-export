@@ -1,15 +1,10 @@
 import { CloseCommand, ExportBorderlessCommand, ExportCommand, ShowUICommand } from '../../shared/types';
+import { Forward } from '../../shared/utils';
 import { removeBorder } from './image';
 import { setFilename } from './state';
 import { zip } from './zip';
 
-export const createMessageClient = ({
-  window,
-  forward,
-}: {
-  window: Window;
-  forward: (fn: (...args: any[]) => any, ...args: any[]) => any; // FIXME: infer forward type
-}) => {
+export const createMessageClient = ({ window, forward }: { window: Window; forward: Forward }) => {
   const client = {
     onMessage: async (event: MessageEvent<{ pluginMessage: ShowUICommand | ExportBorderlessCommand | undefined }>) => {
       const payload = event?.data?.pluginMessage;

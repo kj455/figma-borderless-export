@@ -1,8 +1,8 @@
 import { Extension, Scale } from '../../shared/types';
 
 export const exportSettingMap: {
-  [key in Extension]: {
-    [key in Scale]: ExportSettingsImage;
+  [K in Extension]: {
+    [S in Scale]: ExportSettingsImage;
   };
 } = {
   png: {

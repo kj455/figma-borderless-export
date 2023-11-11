@@ -1,7 +1,8 @@
+import { Option, none, some } from '../../node_modules/fp-ts/lib/Option';
 import { DEFAULT_SCALE, EXTENSION_LIST, SCALE_LIST } from '../../shared/constants';
 import { Command, Extension, Scale } from '../../shared/types';
 
-export const parseCommand = (command: string): Command | null => {
+export const parseCommand = (command: string): Option<Command> => {
   const [action, ext, scaleListStr] = command.split(':');
 
   switch (action) {
@@ -12,25 +13,25 @@ export const parseCommand = (command: string): Command | null => {
       const isValidScaleList = scaleListStr.split(',').every((s) => SCALE_LIST.includes(s as Scale));
 
       if (!isValidExt || !isValidScaleList) {
-        return null;
+        return none;
       }
 
-      return {
+      return some({
         action: 'export',
         properties: scaleList.map((scale) => ({
           ext: ext as Extension,
           scale: scale as Scale,
           suffix: scale !== DEFAULT_SCALE ? `@${scale}` : '',
         })),
-      };
+      });
 
     case 'showUI':
-      return {
+      return some({
         action: 'showUI',
         name: '',
-      };
+      });
 
     default:
-      throw new Error(`Could not parse command. action: ${action}`);
+      return none;
   }
 };

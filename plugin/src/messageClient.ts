@@ -1,57 +1,66 @@
+import { pipe } from '../../node_modules/fp-ts/lib/function';
+import * as TE from '../../node_modules/fp-ts/lib/TaskEither';
 import { CloseCommand, ExportBorderlessCommand, ExportCommand, ShowUICommand } from '../../shared/types';
 import { exportImages } from './exportImage';
 
 type MessageClient = {
-  onMessage: (pluginMessage: ExportCommand | CloseCommand, props: OnMessageProperties) => Promise<void>;
-  showUI: (payload: ShowUICommand) => void;
-  borderlessExport: (payload: ExportBorderlessCommand) => void;
+  dispatch: (command: ShowUICommand | ExportBorderlessCommand) => Promise<void>;
+  onMessage: (command: ExportCommand | CloseCommand) => Promise<void>;
 };
 
-export const createMessageClient = ({
-  figma,
-  forward,
-}: {
-  figma: PluginAPI;
-  forward: (fn: (...args: any[]) => any, ...args: any[]) => any; // FIXME: infer forward type
-}): MessageClient => {
+export const createMessageClient = (figma: PluginAPI): MessageClient => {
   const client: MessageClient = {
-    showUI: (payload) => {
-      forward(figma.ui.postMessage, payload);
-    },
-    borderlessExport: (payload) => {
-      forward(figma.ui.postMessage, payload);
+    dispatch: async (command) => {
+      switch (command.action) {
+        case 'showUI':
+          figma.ui.postMessage(command);
+          break;
+        case 'exportBorderless':
+          figma.ui.postMessage(command);
+          break;
+      }
     },
     onMessage: async (event) => {
       switch (event.action) {
         case 'export':
           let notificationHandler: NotificationHandler | null = null;
-          try {
-            const { selection } = figma.currentPage;
-            if (selection.length === 0) {
-              forward(figma.closePlugin, 'Please select at least one node');
-              break;
-            }
 
-            notificationHandler = forward(figma.notify, 'Exporting images...', { timeout: Infinity });
+          await pipe(
+            TE.right(figma.currentPage.selection),
+            TE.chain((s) => {
+              if (s.length === 0) {
+                figma.closePlugin('Please select at least one node');
+                return TE.left(new Error('empty selection'));
+              }
 
-            // FIXME: remove this hack
-            await new Promise((resolve) => setTimeout(resolve, 0));
-
-            const assets = await forward(exportImages, {
-              properties: event.properties,
-              selection,
-            });
-
-            forward(client.borderlessExport, {
-              action: 'exportBorderless',
-              assets,
-            });
-          } catch (error) {
-            notificationHandler?.cancel();
-          }
+              notificationHandler = figma.notify('Exporting images...', { timeout: Infinity });
+              return TE.right(s);
+            }),
+            TE.flatMap((selection) =>
+              exportImages({
+                properties: event.properties,
+                selection,
+              }),
+            ),
+            TE.match(
+              (error) => {
+                notificationHandler?.cancel();
+                return TE.left(error);
+              },
+              (assets) => {
+                client.dispatch({
+                  action: 'exportBorderless',
+                  assets,
+                });
+                notificationHandler?.cancel();
+                return TE.right(assets);
+              },
+            ),
+          )();
           break;
+
         case 'close':
-          forward(figma.closePlugin);
+          figma.closePlugin();
       }
     },
   };

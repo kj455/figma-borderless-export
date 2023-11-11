@@ -3,137 +3,103 @@ import { exportImages } from '../exportImage';
 import { createMessageClient } from '../messageClient';
 
 describe('messageClient', () => {
-  beforeEach(() => {
-    jest.resetAllMocks();
-  });
+  // beforeEach(() => {
+  //   jest.resetAllMocks();
+  // });
 
-  test('showUI', () => {
-    const forward = jest.fn();
-    const figma = {
-      ui: {
-        postMessage: jest.fn(),
-      },
-    };
-    const payload = { action: 'showUI', name: 'foo' } satisfies ShowUICommand;
-
-    const client = createMessageClient({ forward, figma } as never);
-
-    client.showUI(payload);
-
-    expect(forward.mock.calls).toEqual([
-      [
-        figma.ui.postMessage,
-        {
-          action: 'showUI',
-          name: 'foo',
+  describe('dispatch', () => {
+    test('showUI', () => {
+      const figma = {
+        ui: {
+          postMessage: jest.fn(),
         },
-      ],
-    ]);
-  });
+      };
+      const client = createMessageClient(figma as never);
 
-  test('borderlessExport', () => {
-    const forward = jest.fn();
-    const figma = {
-      ui: {
-        postMessage: jest.fn(),
-      },
-    };
-    const payload = { action: 'exportBorderless', assets: [] } satisfies ExportBorderlessCommand;
+      client.dispatch({ action: 'showUI', name: 'foo' });
 
-    const client = createMessageClient({ forward, figma } as never);
+      expect(figma.ui.postMessage.mock.calls).toEqual([
+        [
+          {
+            action: 'showUI',
+            name: 'foo',
+          },
+        ],
+      ]);
+    });
 
-    client.borderlessExport(payload);
-
-    expect(forward.mock.calls).toEqual([
-      [
-        figma.ui.postMessage,
-        {
-          action: 'exportBorderless',
-          assets: [],
+    test('borderlessExport', () => {
+      const figma = {
+        ui: {
+          postMessage: jest.fn(),
         },
-      ],
-    ]);
+      };
+      const client = createMessageClient(figma as never);
+
+      client.dispatch({ action: 'exportBorderless', assets: ['asset'] } as never);
+
+      expect(figma.ui.postMessage.mock.calls).toEqual([
+        [
+          {
+            action: 'exportBorderless',
+            assets: ['asset'],
+          },
+        ],
+      ]);
+    });
   });
 
   describe('onMessage', () => {
-    test('export - no selection', () => {
-      const forward = jest.fn();
+    test('export - no selection', async () => {
       const figma = {
         currentPage: {
           selection: [],
         },
         closePlugin: jest.fn(),
       };
-      const payload = { action: 'export', properties: [] } satisfies ExportCommand;
+      const client = createMessageClient(figma as never);
 
-      const client = createMessageClient({ forward, figma } as never);
+      await client.onMessage({ action: 'export' } as never);
 
-      client.onMessage(payload as never, {} as never);
-
-      expect(forward.mock.calls).toEqual([
-        [figma.closePlugin, expect.any(String)],
-      ]);
-    })
+      expect(figma.closePlugin.mock.calls).toEqual([[expect.any(String)]]);
+    });
 
     test('export - with selection', async () => {
-      const forward = jest.fn((fn, args) => {
-        switch (fn) {
-          case exportImages:
-            return 'assets';
-          case client.borderlessExport:
-            return 'borderlessExport';
-        }
-      });
       const figma = {
         currentPage: {
           selection: ['node'],
         },
         closePlugin: jest.fn(),
         notify: jest.fn(),
-      };
-      const payload = { action: 'export', properties: [] } satisfies ExportCommand;
-
-      const client = createMessageClient({ forward, figma } as never);
-
-      await client.onMessage(payload as never, {} as never);
-
-      expect(forward.mock.calls).toEqual([
-        [figma.notify, expect.any(String), expect.any(Object)],
-        [exportImages, { properties: [], selection: ['node'] }],
-        [client.borderlessExport, { action: 'exportBorderless', assets: 'assets' }],
-      ]);
-    })
-
-    test('export - error', async () => {
-      const cancelNotification = jest.fn();
-      const forward = jest.fn((fn, args) => {
-        switch (fn) {
-          case exportImages:
-            throw new Error('error');
-          case figma.notify:
-            return {
-              cancel: cancelNotification,
-            }
-        }
-      });
-      const figma = {
-        currentPage: {
-          selection: ['node'],
+        ui: {
+          postMessage: jest.fn(),
         },
-        closePlugin: jest.fn(),
-        notify: jest.fn(),
       };
-      const payload = { action: 'export', properties: [] } satisfies ExportCommand;
+      const client = createMessageClient(figma as never);
+      const dispatch = jest.spyOn(client, 'dispatch');
 
-      const client = createMessageClient({ forward, figma } as never);
+      await client.onMessage({ action: 'export', properties: [] } as never);
 
-      await client.onMessage(payload as never, {} as never);
-
-      expect(forward.mock.calls).toEqual([
-        [figma.notify, expect.any(String), expect.any(Object)],
-        [exportImages, { properties: [], selection: ['node'] }],
+      expect(figma.notify.mock.calls).toEqual([[expect.any(String), { timeout: Infinity }]]);
+      expect(dispatch.mock.calls).toEqual([
+        [
+          {
+            action: 'exportBorderless',
+            assets: [],
+          },
+        ],
       ]);
-      expect(cancelNotification.mock.calls).toEqual([[]])
-    })
-  })
+    });
+
+    test('close', () => {
+      const figma = {
+        closePlugin: jest.fn(),
+      };
+      const client = createMessageClient(figma as never);
+
+      client.onMessage({ action: 'close' } as never);
+
+      expect(figma.closePlugin.mock.calls).toEqual([[]]);
+    });
+  });
 });

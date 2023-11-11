@@ -1,5 +1,7 @@
+import * as TE from '../../../node_modules/fp-ts/TaskEither';
 import { exportSettingMap } from '../constants';
 import { exportImages, ExportImagesPayload } from '../exportImage';
+import { pipe } from 'fp-ts/lib/function';
 
 describe('exportImage', () => {
   type PickedSceneNode = Pick<SceneNode, 'name' | 'width' | 'height' | 'exportAsync'>;
@@ -89,6 +91,6 @@ describe('exportImage', () => {
       ],
     },
   ])('exportImages - $case', async ({ input, expected }) => {
-    expect(await exportImages(input)).toEqual(expected);
+    expect(await pipe(input, exportImages)()).toEqual(await TE.right(expected)());
   });
 });

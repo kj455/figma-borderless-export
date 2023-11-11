@@ -48,7 +48,7 @@ export type ExportCommand = {
 
 export type ExportBorderlessCommand = {
   action: 'exportBorderless';
-  assets: Asset[];
+  assets: readonly Asset[];
 };
 
 export type CloseCommand = {
