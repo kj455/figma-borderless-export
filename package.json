@@ -41,6 +41,7 @@
     "vite-plugin-solid": "^2.5.0"
   },
   "dependencies": {
+    "fp-ts": "^2.16.1",
     "solid-icons": "^1.0.4",
     "solid-js": "^1.6.6"
   }

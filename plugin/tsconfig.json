@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "lib": ["ES2020"],
+    "lib": ["ES2020", "ES2022"],
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true,
+    "moduleResolution": "NodeNext",
     "typeRoots": ["../node_modules/@figma", "../node_modules/@types"]
   }
 }
