@@ -56,7 +56,7 @@ export const App = () => {
   };
 
   const handleSubmit = () => {
-    messageClient.exportFromSettings({
+    messageClient.dispatch({
       action: 'export',
       properties: settings().map((s) => ({
         scale: s.scale as Scale,

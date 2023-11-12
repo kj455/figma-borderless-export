@@ -10,22 +10,22 @@ describe('MessageClient', () => {
   });
 
   test('exportFromSettings', () => {
-    const postMessage = jest.fn();
     const window = {
       parent: {
-        postMessage,
+        postMessage: jest.fn(),
       },
-    } as never;
-
+    };
     const client = createMessageClient({ window } as never);
 
-    const payload = { action: 'export', properties: [] } satisfies ExportCommand;
-    client.exportFromSettings(payload);
+    client.dispatch({ action: 'export', properties: [] });
 
-    expect(postMessage.mock.calls).toEqual([
+    expect(window.parent.postMessage.mock.calls).toEqual([
       [
         {
-          pluginMessage: payload,
+          pluginMessage: {
+            action: 'export',
+            properties: [],
+          },
         },
         '*',
       ],
@@ -35,22 +35,19 @@ describe('MessageClient', () => {
   describe('onMessage', () => {
     test('showUI', () => {
       const forward = jest.fn();
-      
       const client = createMessageClient({ forward } as never);
-      
+
       client.onMessage({
         data: {
           pluginMessage: {
             action: 'showUI',
             name: 'foo',
-          }
-        }
+          },
+        },
       } as never);
 
-      expect(forward.mock.calls).toEqual([
-        [setFilename, 'foo']
-      ])
-    })
+      expect(forward.mock.calls).toEqual([[setFilename, 'foo']]);
+    });
 
     test('exportBorderless', async () => {
       const forward = jest.fn((fn, args) => {
@@ -60,7 +57,7 @@ describe('MessageClient', () => {
           case zip:
             return 'zip';
         }
-      })
+      });
       const window = {
         parent: {
           postMessage: jest.fn(),
@@ -82,8 +79,8 @@ describe('MessageClient', () => {
         [removeBorder, 'asset1'],
         [removeBorder, 'asset2'],
         [zip, ['borderRemoved', 'borderRemoved']],
-        [client.close, { action: 'close' }],
+        [client.dispatch, { action: 'close' }],
       ]);
-    })
-  })
+    });
+  });
 });

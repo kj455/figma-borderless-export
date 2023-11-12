@@ -4,9 +4,27 @@ import { removeBorder } from './image';
 import { setFilename } from './state';
 import { zip } from './zip';
 
-export const createMessageClient = ({ window, forward }: { window: Window; forward: Forward }) => {
-  const client = {
-    onMessage: async (event: MessageEvent<{ pluginMessage: ShowUICommand | ExportBorderlessCommand | undefined }>) => {
+type MessageClient = {
+  dispatch: (command: ExportCommand | CloseCommand) => void;
+  onMessage: (
+    event: MessageEvent<{ pluginMessage: ShowUICommand | ExportBorderlessCommand | undefined }>,
+  ) => Promise<void>;
+};
+
+export const createMessageClient = ({ window, forward }: { window: Window; forward: Forward }): MessageClient => {
+  const client: MessageClient = {
+    dispatch: (command) => {
+      switch (command.action) {
+        case 'export':
+          window.parent.postMessage({ pluginMessage: command }, '*');
+          break;
+        case 'close':
+          window.parent.postMessage({ pluginMessage: command }, '*');
+          break;
+      }
+    },
+
+    onMessage: async (event) => {
       const payload = event?.data?.pluginMessage;
       if (payload == null) {
         return;
@@ -19,27 +37,11 @@ export const createMessageClient = ({ window, forward }: { window: Window; forwa
         case 'exportBorderless':
           const borderRemoved = await Promise.all(payload.assets.map((a) => forward(removeBorder, a)));
           await forward(zip, borderRemoved);
-          forward(client.close, { action: 'close' });
+          forward(client.dispatch, {
+            action: 'close',
+          });
           break;
       }
-    },
-
-    exportFromSettings: (command: ExportCommand) => {
-      window.parent.postMessage(
-        {
-          pluginMessage: command,
-        },
-        '*',
-      );
-    },
-
-    close: (command: CloseCommand) => {
-      window.parent.postMessage(
-        {
-          pluginMessage: command,
-        },
-        '*',
-      );
     },
   };
   return client;
