@@ -6,7 +6,7 @@
   "author": "kj455",
   "scripts": {
     "dev": "pnpm clean && run-p tsc:watch build:watch",
-    "build": "tsc -p tsconfig.json",
+    "build": "pnpm clean && run-p typecheck build:plugin build:ui",
     "watch": "run-p tsc:plugin:watch tsc:ui:watch",
     "test": "jest",
     "test:watch": "jest --watch",

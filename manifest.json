@@ -18,5 +18,8 @@
       "name": "Export as jpg (1x, 1.5x, 2x) [BETA]",
       "command": "export:jpg:1x,1.5x,2x"
     }
-  ]
+  ],
+  "networkAccess": {
+    "allowedDomains": ["none"]
+  }
 }
