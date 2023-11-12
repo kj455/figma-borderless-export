@@ -1,6 +1,6 @@
-import * as A from '../../node_modules/fp-ts/Array';
-import * as TE from '../../node_modules/fp-ts/lib/TaskEither';
-import * as F from '../../node_modules/fp-ts/lib/function';
+import * as A from 'fp-ts/lib/Array';
+import * as TE from 'fp-ts/lib/TaskEither';
+import { pipe } from 'fp-ts/lib/function';
 import { Asset, ExportImageProperty } from '../../shared/types';
 import { exportSettingMap } from './constants';
 
@@ -10,7 +10,7 @@ const exportAsset =
   (s: SceneNode) =>
   ({ ext, scale, suffix }: ExportImageProperty): TE.TaskEither<Error, Asset> => {
     const setting = exportSettingMap[ext][scale];
-    return F.pipe(
+    return pipe(
       TE.tryCatch(
         () => s.exportAsync(setting),
         (reason) => new Error('exportAsync failed', { cause: reason }),
@@ -36,7 +36,7 @@ export const exportImages = ({
   properties,
   selection,
 }: ExportImagesPayload): TE.TaskEither<Error, readonly Asset[]> => {
-  return F.pipe(
+  return pipe(
     selection as SceneNode[],
     A.flatMap((s) => properties.map(exportAsset(s))),
     TE.sequenceArray,

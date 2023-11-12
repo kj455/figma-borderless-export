@@ -1,5 +1,5 @@
-import { pipe } from '../../node_modules/fp-ts/lib/function';
-import * as TE from '../../node_modules/fp-ts/lib/TaskEither';
+import { pipe } from 'fp-ts/lib/function';
+import * as TE from 'fp-ts/lib/TaskEither';
 import { CloseCommand, ExportBorderlessCommand, ExportCommand, ShowUICommand } from '../../shared/types';
 import { exportImages } from './exportImage';
 

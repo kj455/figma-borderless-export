@@ -1,4 +1,4 @@
-import { Option, none, some } from '../../node_modules/fp-ts/lib/Option';
+import { Option, none, some } from 'fp-ts/lib/Option';
 import { DEFAULT_SCALE, EXTENSION_LIST, SCALE_LIST } from '../../shared/constants';
 import { Command, Extension, Scale } from '../../shared/types';
 

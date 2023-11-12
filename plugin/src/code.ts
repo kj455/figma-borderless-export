@@ -1,21 +1,20 @@
 import { match } from 'fp-ts/lib/Option';
-import { pipe } from 'fp-ts/lib/function';
 import * as TE from 'fp-ts/lib/TaskEither';
-import { forward } from '../../shared/utils';
+import { pipe } from 'fp-ts/lib/function';
 import { parseCommand } from './command';
 import { exportImages } from './exportImage';
 import { createMessageClient } from './messageClient';
 
 const messageClient = createMessageClient(figma);
 
-const main = async (_command: string) => {
+const main = async (commandStr: string) => {
   const { selection } = figma.currentPage;
   if (selection.length === 0) {
     figma.closePlugin('Please select at least one node');
   }
 
   pipe(
-    parseCommand(_command),
+    parseCommand(commandStr),
     match(
       () => figma.closePlugin('Invalid command'),
       async (command) => {
@@ -26,6 +25,10 @@ const main = async (_command: string) => {
             break;
 
           case 'export':
+            figma.notify('Running borderless-export', { timeout: 1000 });
+
+            await sleep(500); // NOTE: necessary to show notification
+
             figma.showUI(__html__, { visible: false });
 
             pipe(
@@ -46,6 +49,8 @@ const main = async (_command: string) => {
     ),
   );
 };
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 main(figma.command);
 
